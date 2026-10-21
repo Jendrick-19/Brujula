@@ -1,4 +1,4 @@
-# Brujula
+# Brújula
 
 Plataforma de información y asistencia para el personal de centros de atención a mayores y dependientes (residencias, centros de día y ayuda a domicilio).
 
