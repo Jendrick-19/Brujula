@@ -1,0 +1,33 @@
+# Secretos y entorno
+.env
+*.pem
+*.key
+application-local.yml
+application-secrets.yml
+
+# Java / Maven / Gradle
+target/
+build/
+.gradle/
+*.class
+*.jar
+hs_err_pid*
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+mobile/build/
+*.iml
+
+# IDEs y sistema
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Datos locales
+infra/data/
+infra/backups/
+*.log
