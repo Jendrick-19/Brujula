@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Brújula · Hoja de ruta</title>
+    <style>
+        :root {
+            --bg: #f6f7f9;
+            --card: #fff;
+            --tx: #1d2330;
+            --mut: #667085;
+            --bd: #e3e6eb;
+            --ac: #1f6feb;
+            --ok: #1a7f4b;
+            --bar: #e3e6eb;
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            color-scheme: light
+        }
+
+        @media (prefers-color-scheme:dark) {
+            :root:not([data-theme="light"]) {
+                --bg: #12151b;
+                --card: #1b2029;
+                --tx: #e8ebf1;
+                --mut: #9aa3b2;
+                --bd: #2c3341;
+                --ac: #5b9bff;
+                --ok: #4cc38a;
+                --bar: #2c3341;
+                color-scheme: dark
+            }
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #12151b;
+            --card: #1b2029;
+            --tx: #e8ebf1;
+            --mut: #9aa3b2;
+            --bd: #2c3341;
+            --ac: #5b9bff;
+            --ok: #4cc38a;
+            --bar: #2c3341;
+            color-scheme: dark
+        }
+
+        html {
+            scroll-padding-top: env(safe-area-inset-top, 0px)
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--tx);
+            font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif
+        }
+
+        main {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 20px 14px 60px
+        }
+
+        h1 {
+            margin: 0 0 4px;
+            font-size: 1.6rem
+        }
+
+        .sub {
+            color: var(--mut);
+            margin: 0 0 16px
+        }
+
+        .top {
+            position: sticky;
+            top: env(safe-area-inset-top, 0px);
+            background: var(--bg);
+            padding: 10px 0;
+            z-index: 5
+        }
+
+        .bar {
+            height: 10px;
+            background: var(--bar);
+            border-radius: 99px;
+            overflow: hidden
+        }
+
+        .bar i {
+            display: block;
+            height: 100%;
+            width: 0;
+            background: var(--ok);
+            transition: width .3s
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 8px;
+            font-size: .9rem;
+            color: var(--mut)
+        }
+
+        button {
+            font: inherit;
+            font-size: .85rem;
+            border: 1px solid var(--bd);
+            background: var(--card);
+            color: var(--tx);
+            border-radius: 8px;
+            padding: 5px 10px;
+            cursor: pointer
+        }
+
+        button.on {
+            background: var(--ac);
+            color: #fff;
+            border-color: var(--ac)
+        }
+
+        .ph {
+            background: var(--card);
+            border: 1px solid var(--bd);
+            border-radius: 12px;
+            margin: 16px 0;
+            padding: 14px
+        }
+
+        .ph h2 {
+            margin: 0;
+            font-size: 1.15rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 8px
+        }
+
+        .ph h2 span {
+            font-size: .85rem;
+            color: var(--mut);
+            font-weight: 400;
+            white-space: nowrap
+        }
+
+        .ph>p {
+            margin: 4px 0 8px;
+            color: var(--mut);
+            font-size: .9rem
+        }
+
+        details {
+            border-top: 1px solid var(--bd)
+        }
+
+        summary {
+            cursor: pointer;
+            padding: 9px 0;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            gap: 8px
+        }
+
+        summary .c {
+            font-weight: 400;
+            color: var(--mut);
+            font-size: .85rem;
+            white-space: nowrap
+        }
+
+        details.done summary {
+            color: var(--ok)
+        }
+
+        details.done summary .t::before {
+            content: "✓ "
+        }
+
+        label {
+            display: flex;
+            gap: 10px;
+            padding: 6px 0 6px 4px;
+            align-items: flex-start;
+            cursor: pointer
+        }
+
+        input {
+            margin-top: 5px;
+            width: 18px;
+            height: 18px;
+            flex: none;
+            accent-color: var(--ok)
+        }
+
+        label.k span {
+            text-decoration: line-through;
+            color: var(--mut)
+        }
+
+        .hide {
+            display: none
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="top">
+            <h1>🧭 Brújula · Hoja de ruta</h1>
+            <p class="sub">Marca cada paso al completarlo. Tu progreso se guarda en este navegador.</p>
+            <div class="bar"><i id="bar"></i></div>
+            <div class="row"><span id="tot"></span><span><button id="flt">Ocultar completados</button> <button
+                        id="rst">Reiniciar</button></span></div>
+        </div>
+        <div id="app"></div>
+    </main>
+    <script>
+        var K = "brujula-hoja-v1";
+        var P = [
+            {
+                t: "1 · Ajustes de GitHub", d: "Dejar el repositorio ordenado antes de programar.", k: [
+                    ["Rama develop y protección de main", ["En GitHub: Settings → Branches → pon develop como rama por defecto.", "Crea una regla de protección para main: solo entra por pull request.", "Comprueba que tus ramas feature/... salen de develop."]],
+                    ["Hitos (milestones)", ["Issues → Milestones → New milestone.", "Crea: Base técnica (nov), Núcleo RAG (ene), Asistente completo (feb), Clientes y cierre (jun).", "Añade a cada uno su fecha límite."]],
+                    ["Issues y tablero", ["Crea una issue por tarea de esta hoja (esqueleto Spring Boot, modelo de datos, login JWT, ingesta, RAG, Flutter…).", "Asigna cada issue a su hito.", "Crea un Project con columnas Por hacer / En curso / Hecho y añade las issues."]],
+                    ["Revisar que no hay secretos", ["Comprueba que .env no está subido y que .env.example solo tiene valores de ejemplo.", "Si alguna vez subiste una clave, cámbiala: borrarla del historial no basta."]]]
+            },
+            {
+                t: "2 · Entorno de desarrollo", d: "Todo lo que hay que tener instalado en tu equipo.", k: [
+                    ["Java y herramientas", ["Instala JDK 21 (Temurin) y comprueba con java -version.", "Comprueba git --version.", "Instala Docker y comprueba docker --version.", "Maven no hace falta: el proyecto traerá mvnw."]],
+                    ["Extensiones de VS Code", ["Extension Pack for Java.", "Spring Boot Extension Pack y Spring Initializr Java Support.", "Docker (Microsoft) y un cliente de bases de datos.", "Más adelante: Flutter y Dart."]],
+                    ["Base de datos local", ["Copia .env.example como .env y cambia las contraseñas.", "Ejecuta docker compose -f infra/docker-compose.yml --env-file .env up -d.", "Comprueba con docker ps que el contenedor brujula-db está en marcha y sano."]]]
+            },
+            {
+                t: "3 · Esqueleto del backend", d: "Spring Boot arrancando, con salud y Swagger.", k: [
+                    ["Generar el proyecto", ["Spring Initializr: Maven, Java 21, Spring Boot 3.x estable, grupo es.brujula, artefacto backend.", "Dependencias: Web, Data JPA, Security, Validation, PostgreSQL Driver, Flyway, Actuator.", "Descomprímelo dentro de backend/ y ábrelo en VS Code."]],
+                    ["Configuración", ["Añade springdoc-openapi-starter-webmvc-ui al pom.xml.", "En application.yml lee la base de datos de variables de entorno (las del .env).", "Crea un perfil demo separado para datos de ejemplo."]],
+                    ["Probar y subir", ["Arranca con ./mvnw spring-boot:run.", "Comprueba que /actuator/health devuelve UP.", "Comprueba que Swagger abre en /swagger-ui.html.", "Commit en feature/backend-esqueleto, pull request a develop y entrada en la bitácora."]]]
+            },
+            {
+                t: "4 · Modelo de datos y login", d: "Usuarios, roles y seguridad.", k: [
+                    ["Modelo de datos inicial", ["Diseña el esquema: centros, usuarios, roles, documentos y fragmentos.", "Crea la migración Flyway V1.", "Crea las entidades JPA y los repositorios."]],
+                    ["Login con JWT y roles", ["Configura Spring Security sin sesiones (stateless).", "Endpoint de login que devuelve el token.", "Roles AUXILIAR, COORDINADORA, ADMIN y EVALUADOR (solo lectura).", "Contraseñas con BCrypt."]],
+                    ["Usuarios y pruebas", ["Script de datos demo (solo perfil demo): admin, coordinadora, 5-6 auxiliares en 2 centros, evaluador.", "Usuario de base de datos de la app con permisos limitados.", "Tests de permisos con JUnit."]]]
+            },
+            {
+                t: "5 · Documentos y RAG (el núcleo)", d: "Lo que diferencia al proyecto: respuestas con cita.", k: [
+                    ["Decidir el modelo de IA", ["Revisa la RAM y la GPU de tu servidor Proxmox.", "Elige Ollama local o una API externa configurable.", "Anota la decisión en docs/decisiones."]],
+                    ["Ingesta de documentos", ["Descarga el convenio y la normativa públicos (BOE y BOJA).", "Endpoint para subir PDF.", "Extrae el texto con Tika o PDFBox y trocéalo guardando documento y página.", "Genera embeddings y guárdalos en pgvector."]],
+                    ["Preguntas con cita", ["Endpoint de pregunta: busca los fragmentos más cercanos y compón la respuesta.", "La respuesta debe incluir documento y página de origen.", "Si no hay base suficiente, que diga que no lo sabe.", "Prepara 20 preguntas de prueba y mide cuántas acierta."]]]
+            },
+            {
+                t: "6 · Asistente completo", d: "Turnos y planillas con funciones controladas.", k: [
+                    ["Importar planillas", ["Con las respuestas de la residencia, define el formato real.", "Importación desde Excel/CSV con validación y informe de errores.", "Probar con datos ficticios."]],
+                    ["Tool calling", ["Función “mi turno de hoy”.", "Función “con quién trabajo”.", "Control de permisos en cada función; el modelo nunca ejecuta SQL libre.", "Tests de que una auxiliar no ve datos ajenos."]]]
+            },
+            {
+                t: "7 · App móvil Flutter", d: "Cliente para las auxiliares.", k: [
+                    ["Esqueleto", ["Crea el proyecto en mobile/.", "Elige gestión de estado (la que visteis en clase).", "Guarda el token con flutter_secure_storage y navega con go_router."]],
+                    ["Pantallas", ["Login.", "Mi turno de hoy y con quién trabajo.", "Chat con el asistente mostrando las fuentes.", "Biblioteca de documentos con búsqueda."]]]
+            },
+            {
+                t: "8 · Panel de coordinación", d: "Lo mínimo imprescindible.", k: [
+                    ["Decidir tecnología", ["Pregunta al tutor si JavaFX es obligatorio o vale Flutter de escritorio.", "Anota la decisión en docs/decisiones."]],
+                    ["Funciones mínimas", ["Subir documentos.", "Importar planillas.", "Ver el estado de la ingesta."]]]
+            },
+            {
+                t: "9 · Calidad y despliegue", d: "Que funcione fuera de tu portátil.", k: [
+                    ["Pruebas y CI", ["Tests con JUnit y Mockito en lo crítico: permisos, RAG y tool calling.", "Activa el flujo de GitHub Actions cuando exista el pom.xml."]],
+                    ["Servidor", ["Docker Compose completo (backend y base de datos).", "Reverse proxy con HTTPS y acceso por Tailscale.", "Copias de seguridad programadas y prueba de restauración."]]]
+            },
+            {
+                t: "10 · Documentación y cierre", d: "Se hace durante todo el proyecto, no al final.", k: [
+                    ["Documentación continua", ["Una entrada en la bitácora cada semana.", "Una decisión en docs/decisiones cada vez que elijas algo importante.", "Mantén requisitos y arquitectura al día."]],
+                    ["Cierre", ["Consulta con el tutor el formato de la memoria y los hitos.", "Escribe la memoria a partir de la bitácora y las decisiones.", "Prepara la demostración con usuarios de prueba y la defensa."]]]
+            }
+        ];
+        var S = {}; try { S = JSON.parse(localStorage.getItem(K) || "{}") } catch (e) { S = {} }
+        function save() { try { localStorage.setItem(K, JSON.stringify(S)) } catch (e) { } }
+        var h = "";
+        P.forEach(function (p, i) {
+            h += '<section class="ph" data-p="' + i + '"><h2>' + p.t + '<span class="pc"></span></h2><p>' + p.d + '</p>';
+            p.k.forEach(function (t, j) {
+                h += '<details data-t="' + i + '.' + j + '"><summary><span class="t">' + t[0] + '</span><span class="c"></span></summary>';
+                t[1].forEach(function (s, n) { var id = i + '.' + j + '.' + n; h += '<label><input type="checkbox" data-id="' + id + '"' + (S[id] ? ' checked' : '') + '><span>' + s + '</span></label>' });
+                h += '</details>'
+            });
+            h += '</section>'
+        });
+        var app = document.getElementById("app"); app.innerHTML = h;
+        var hideDone = false;
+        function update() {
+            var all = 0, done = 0;
+            P.forEach(function (p, i) {
+                var pa = 0, pd = 0;
+                p.k.forEach(function (t, j) {
+                    var d = app.querySelector('[data-t="' + i + '.' + j + '"]'), c = 0;
+                    t[1].forEach(function (s, n) { var id = i + '.' + j + '.' + n; var l = d.querySelectorAll('input')[n]; l.checked = !!S[id]; l.parentNode.className = S[id] ? 'k' : ''; if (S[id]) c++ });
+                    d.querySelector('.c').textContent = c + '/' + t[1].length;
+                    var ok = c === t[1].length; d.className = (ok ? 'done' : '') + (ok && hideDone ? ' hide' : '');
+                    pa += t[1].length; pd += c
+                });
+                app.querySelector('[data-p="' + i + '"] .pc').textContent = pd + '/' + pa;
+                all += pa; done += pd
+            });
+            document.getElementById("bar").style.width = (all ? done / all * 100 : 0) + '%';
+            document.getElementById("tot").textContent = done + ' de ' + all + ' pasos (' + Math.round(all ? done / all * 100 : 0) + '%)'
+        }
+        app.addEventListener("change", function (e) { var id = e.target.getAttribute("data-id"); if (!id) return; if (e.target.checked) S[id] = 1; else delete S[id]; save(); update() });
+        var f = document.getElementById("flt");
+        f.onclick = function () { hideDone = !hideDone; f.textContent = hideDone ? "Mostrar completados" : "Ocultar completados"; f.className = hideDone ? "on" : ""; update() };
+        var r = document.getElementById("rst"), armed = false;
+        r.onclick = function () {
+            if (!armed) { armed = true; r.textContent = "¿Seguro? Pulsa otra vez"; r.className = "on"; setTimeout(function () { armed = false; r.textContent = "Reiniciar"; r.className = "" }, 4000); return }
+            S = {}; save(); armed = false; r.textContent = "Reiniciar"; r.className = ""; update()
+        };
+        update();
+    </script>
+</body>
+
+</html>
