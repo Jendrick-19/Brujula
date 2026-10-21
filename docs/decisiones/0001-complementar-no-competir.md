@@ -1,6 +1,6 @@
 # 0001. Brújula complementa a los programas de gestión
 
-- Estado: aceptada
+- Estado: pendiente
 - Fecha: 2026-10
 
 ## Contexto
